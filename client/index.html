@@ -1,0 +1,61 @@
+<head>
+  <title>I am here! Where are you?</title>
+
+  <meta name="viewport" content="width=device-width">
+
+  <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true"></script>
+</head>
+
+<body>
+  {{> intro}}
+  <div id="info">
+    {{> status}}
+    {{> participantList}}
+    {{> controls}}
+  </div>
+  {{> map}}
+</body>
+
+<template name="intro">
+
+  <div class="intro">
+    <input type="text" id="name" name="name" placeholder="Your name" />
+    <button id="go">{{greeting}}!</button>
+  </div>
+</template>
+
+<template name="map">
+  {{leMap}}
+  <div id="map_canvas"></div>
+</template>
+
+<template name="participantList">
+  <div class="participants">
+    <h2>On this map</h2>
+    {{#each participants}}
+      {{> participant}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="participant">
+  <div class="participant">
+    {{name}}
+  </div>
+</template>
+
+<template name="controls">
+  <div class="controls">
+    <button id="send">Send map</button>
+    <br/>
+    <button id="update">Update my location</button>
+    <br/>
+    <button id="leave">Leave the map</button>
+  </div>
+</template>
+
+<template name="status">
+  <div class="server-status {{theStatus}}">
+    {{theStatus}}
+  </div>
+</template>

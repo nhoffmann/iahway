@@ -1,0 +1,96 @@
+/* CSS declarations go here */
+
+
+.rounded-corners (@radius: 5px) {
+  border-radius: @radius;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+}
+
+html { height: 100% }
+body {
+  height: 100%; margin: 0px; padding: 0px 
+  background: #eee;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.intro {
+  
+  margin: 100px auto;
+  width: 350px;
+
+  input[type="text"]{
+    margin: 10px auto;
+    width: 328px;
+    font-size: 30px;
+    padding: 10px;
+    border: 1px solid #eee;
+    .rounded-corners;
+  }
+
+  button{
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0 auto;
+    width: 100%;
+    padding: 10px 0;
+    .rounded-corners;
+  }
+}
+
+#info {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  z-index: 100;
+  
+  > div {
+    .rounded-corners(3px);
+  }
+
+  .participants{
+
+    h2 {
+      font-size: 20px;
+      margin: 5px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    margin: 10px 0;
+    padding: 5px;
+    background: #eee;
+    .rounded-corners(3px);
+    color: #333;
+    
+    .participant{
+      padding: 5px;
+    }
+  }
+
+  .server-status {
+    padding: 5px;
+    color: white;
+    .rounded-corners(3px);
+    text-align: center;
+  }
+
+  .connecting {
+    background: grey;
+  }
+
+  .connected {
+    background: green;
+  }
+
+  .waiting {
+    background: orange;
+  }  
+}
+
+#map_canvas { 
+  height: 100%;
+}
+
+
+
