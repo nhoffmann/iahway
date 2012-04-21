@@ -1,63 +1,10 @@
+map = new Map()
 
-Map = {
-  locate: ->
-    if navigator.geolocation
-      navigator.geolocation.getCurrentPosition(Map.success, Map.error)
-    else
-      error('not supported')
-
-  create: (center) ->
-    console.log "Creating map"
-    myOptions = {
-      zoom: 15
-      center: center
-      mapTypeControl: false
-      navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL}
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-    
-    Map.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    Map.createMarkers()
-
-  latlng: (latitude, longitude) ->
-    new google.maps.LatLng(latitude, longitude)
-
-  createMarkers: ->
-    console.log "Setting markers for map", Session.get('mapId')
-    Participants.find({mapId: Session.get('mapId')}).forEach( (item) ->
-      console.log item
-      new google.maps.Marker({
-        position: new google.maps.LatLng(item.latitude, item.longitude), 
-        map: Map.map, 
-        title: item.name
-      });
-    )
-
-  updateParticipant: ->
-    if Session.get('me')?
-      Participants.update(Session.get('me')._id, 
-        $set: 
-          latitude: Session.get('latlng').lat()
-          longitude: Session.get('latlng').lng()
-      )
-
-      Session.set('me', Participants.findOne(Session.get('me')._id))
-    
-
-  success: (position) ->
-    latlng = Map.latlng(position.coords.latitude, position.coords.longitude)
-    console.log position.coords.latitude, position.coords.longitude, latlng
-    Session.set('latlng', latlng)
-
-    Map.updateParticipant()
-
-    #Participants.update(Session.get("me")._id, {latlng: latlng})
-    #Map.create(latlng)
-
-  error: (msg) ->
-    console.log(arguments)
-
-}
+window.addEventListener('load', (e) ->
+  setTimeout(() ->
+    window.scrollTo(0, 1)
+  , 1)
+, false)
 
 
 MapsRouter = Backbone.Router.extend(
@@ -70,7 +17,7 @@ MapsRouter = Backbone.Router.extend(
 
     if Session.get('mapId') && Session.get('me')
       console.log "Starting map through routing"
-      Map.locate()
+      map.locate()
     
     #   console.log mapId, Session.get('mapId'), Session.get('me')
       
@@ -88,20 +35,17 @@ Router = new MapsRouter
 
 Meteor.startup( () ->
   Backbone.history.start pushState: true
-  
-  Map.locate()
+  $('.participants').hide()
+  $('#name').focus()
+  map.locate()
 )
-
-Template.map.leMap =  ->
-  leMap = Maps.findOne({name: Session.get('mapId')})
-  console.log "LeMap", leMap
-  #Map.locate()
 
 Template.participantList.participants = ->
   if Session.get('mapId')?
     Participants.find(
       mapId: Session.get('mapId')
     )
+
 
 Template.intro.greeting = ->
   if Session.get('mapId')?
@@ -114,7 +58,8 @@ Template.intro.events =
 
     name = $('#name').val()
 
-    $('.intro').remove()
+    $('.intro').hide()
+    $('.participants').show()
 
     console.log "Looking up user or creating", name
     unless Session.get('mapId')?
@@ -133,12 +78,12 @@ Template.intro.events =
       Participants.insert(
         name: name
         mapId: Session.get('mapId')
+        color: 'rgb('+utils.getRandomInt(50,150)+', '+utils.getRandomInt(50,150)+', '+utils.getRandomInt(50,150)+')'
       )
       Session.set('me', Participants.findOne({name: name}))
       #latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
     
-    Map.updateParticipant()
-    Map.create(Session.get('latlng'))
+    map.updateParticipant()
 
 
 Template.controls.events =
@@ -153,7 +98,10 @@ Template.controls.events =
 
   'click #update': (event) ->
     console.log "update location"
-    Map.locate()
+    map.locate()
 
 Template.status.theStatus = () ->
   Meteor.status().status
+
+
+
