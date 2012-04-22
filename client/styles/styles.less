@@ -32,6 +32,7 @@ header {
     font-size: 20px;
     margin: 0;
     padding: 0;
+    line-height: 30px;
     display: inline;
   }
 
@@ -67,15 +68,24 @@ header {
   left: 0;
 
   width: 100%;
-  // height: 360px;
-  .content-bg;
+  height: 100%;
+  
   z-index: 2;
 
   text-align: center;
 
   .intro{
-    width: 320px;
-    margin: 100px auto 120px;
+    //width: 320px;
+    width: 100%;
+    height: 100%;
+    .form {
+      position: relative;
+      top: 100px;
+      width: 320px;
+      margin: 0 auto;
+    }
+
+    .content-bg;
 
     input[type="text"]{
       margin: 10px auto;
@@ -98,6 +108,7 @@ header {
 
   .participants{
     text-align:left;
+    .content-bg;
     h2 {
       font-size: 20px;
       margin: 0;
@@ -105,7 +116,6 @@ header {
 
     margin: 0;
     padding: 5px;
-    .rounded-corners(3px);
     color: white;
     
     .participant{

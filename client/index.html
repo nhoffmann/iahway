@@ -5,6 +5,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
   <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true"></script>
+  <script type="text/javascript" src="/js/lib/dropdown.js"></script>
 
 </head>
 
@@ -22,39 +23,3 @@
     {{> controls}}
   </footer>
 </body>
-
-<template name="intro">
-  <div class="intro">
-    <input type="text" id="name" name="name" placeholder="Your name" />
-    <button id="go">{{greeting}}!</button>
-  </div>
-</template>
-
-<template name="participantList">
-  <div class="participants">
-    {{#each participants}}
-      {{> participant}}
-    {{/each}}
-  </div>
-</template>
-
-<template name="participant">
-  <span class="participant" style="background: {{color}}">
-    {{name}}
-  </span>
-</template>
-
-<template name="controls">
-  <div class="controls">
-    <button id="send">Send map</button>
-    
-    <button id="update">Update my location</button>
-    
-    <button id="leave">Leave the map</button>
-  </div>
-</template>
-
-<template name="status">
-  <div class="server-status {{theStatus}}">
-  </div>
-</template>
