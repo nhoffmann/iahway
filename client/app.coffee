@@ -1,9 +1,8 @@
 # Create a namespace for the application
 window.App = new Object()
 # Create the global map object
-App.map = new Map()
 
-Router = new MapsRouter()
+App.router = new MapsRouter()
 
 # hack to hide the address bar on mobile safari
 window.addEventListener('load', (e) ->
@@ -14,8 +13,14 @@ window.addEventListener('load', (e) ->
 
 # Starting up
 Meteor.startup( () ->
-  Backbone.history.start pushState: true
-  $('.participants').hide()
-  $('#name').focus()
+  $('.dropdown-toggle').dropdown()
+
+  App.map = new Map()
+  App.mapsController = new MapsController()
+  App.participantsController = new ParticipantsController()
+  
   App.map.locate()
+
+  # start the routing
+  Backbone.history.start pushState: true
 )

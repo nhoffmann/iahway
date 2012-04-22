@@ -1,13 +1,16 @@
 Template.controls.events =
+  'click #send': (event) ->
+    event.preventDefault()
+    separator = "&"
+    subject = "subject=I am here! Where are you?"
+    body = "body=" + window.location.href
+
+    window.location.href = "mailto:?" + subject + separator + body
+
   'click #leave': (event) ->
-    Participants.remove(Session.get('me')._id, (error) ->
-      if error
-        console.log error
-      else
-        window.location = "/"
-    )
-    #window.location = "/"
+    event.preventDefault()
+    App.participantsController.destroy()
 
   'click #update': (event) ->
-    console.log "update location"
-    map.locate()
+    event.preventDefault()
+    App.map.locate()

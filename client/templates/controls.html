@@ -1,9 +1,13 @@
 <template name="controls">
-  <div class="controls">
-    <button id="send">Send map</button>
-    
-    <button id="update">Update my location</button>
-    
-    <button id="leave">Leave the map</button>
+  <div class="controls dropdown pull-right">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
+      Actions
+      <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a href="#" id="send">Send map</a></li>
+      <li><a href="#" id="update">Update my location</a></li>
+      <li><a href="#" id="leave">Leave the map</a></li>
+    </ul>
   </div>
 </template>

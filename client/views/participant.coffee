@@ -1,3 +1,8 @@
 Template.participant.events =
   'click': (event)->
-    console.log event
+    name = $(event.target).text().trim()
+    console.log name
+    App.participantsController.centerParticipant(name)
+
+Template.participant.marker = ->
+  App.map.updateMarkerForUser(this)

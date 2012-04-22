@@ -1,23 +1,34 @@
 MapsRouter = Backbone.Router.extend(
   routes:
-    ":map_id": "main"
+    "map/:map_id": "map"
+    "unsupported": "unsupported"
+    "*home": "home"
  
-  main: (mapId) ->
-    unless mapId == ''
-      Session.set "mapId", mapId
+  home: ->
+    console.log "Home"
+    $('.participants').hide()
+    $('.intro').show()
+    $('#name').focus()
+
+  map: (mapId) ->
+    Session.set "mapId", mapId
+    console.log "Map", Session.get('mapId')
 
     if Session.get('mapId') && Session.get('me')
       console.log "Starting map through routing"
+      Template.intro.showParticipants()
+      console.log "Existing user", Session.get('me')
       App.map.locate()
-    
-    #   console.log mapId, Session.get('mapId'), Session.get('me')
       
+  unsupported: ->
+    console.log "Browser does not have the necessary features"
+    # TODO show proper error screen
 
- 
   setMap: (mapId) ->
     if mapId?
-      @navigate(mapId, true)
+      @navigate('map/' + mapId, true)
       
+
       
 )
 

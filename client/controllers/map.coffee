@@ -2,44 +2,44 @@ class Map
   
   markers: {}
 
-  locate: ->
+  constructor: ->
+    if @hasGeolocation()
+      @init()
+    
+  hasGeolocation: ->
     if navigator.geolocation
-      navigator.geolocation.getCurrentPosition(@success, @error)
-    else
-      error('not supported')
+      return true
+    App.router.navigate('/unsupported', true)
 
-  create: (center) ->
-    console.log "Creating map"
+  # Draws a new map
+  init: ->
     myOptions = {
       zoom: 15
-      center: center
       mapTypeControl: false
       navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL}
       mapTypeId: google.maps.MapTypeId.ROADMAP
     }
     
     @map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    @createMarkers()
 
-  latlng: (latitude, longitude) ->
-    new google.maps.LatLng(latitude, longitude)
+  center: (latlng) =>
+    @map.setCenter(latlng)
 
-  
-
-  createMarkers: =>
-    console.log "Setting markers for map", Session.get('mapId'), @
-    Participants.find({mapId: Session.get('mapId')}).forEach( (item) =>
-      console.log _this
-      # marker = new google.maps.Marker({
-      #   position: new google.maps.LatLng(item.latitude, item.longitude), 
-      #   map: Map.map, 
-      #   title: item.name
-      # });
-      # Map.markers[item._id] = marker
-
-      unless @updateMarkerForUser(item)
-        @createMarkerForUser(item)
+  locate: =>
+    navigator.geolocation.getCurrentPosition(@success, @error)
+    
+  drawMarkers: =>
+    participants = Participants.find({mapId: Session.get('mapId')})
+    console.log "Drawing markers", participants.count()
+    participants.forEach( (item) =>
+      @updateMarkerForUser(item)
     )
+
+  removeAllMarkers: ->
+    $.each(@markers, (userId, marker) ->
+      marker.setMap(null)
+    )
+    @markers = {}
 
   createMarkerForUser: (user) =>
     console.log "Creating marker for user", user
@@ -52,35 +52,21 @@ class Map
 
   updateMarkerForUser: (user) =>
     unless @markers[user._id]
-      console.log "NO marker for user yet", user
-      return false
-    console.log "Updating marker for user", user
+      @createMarkerForUser(user)
     marker = @markers[user._id]
     marker.setPosition(new google.maps.LatLng(user.latitude, user.longitude))
-    marker.setMap(@map)
-    true
-    
-  updateParticipant: ->
-    _this = @
-    if Session.get('me')?
-      Participants.update(Session.get('me')._id, 
-        $set: 
-          latitude: Session.get('latlng').lat()
-          longitude: Session.get('latlng').lng()
-      , _this.createMarkers)
-
-      Session.set('me', Participants.findOne(Session.get('me')._id))
-    
+    marker.setMap(@map) 
 
   success: (position) =>
     latlng = @latlng(position.coords.latitude, position.coords.longitude)
-    console.log position.coords.latitude, position.coords.longitude, latlng
-    Session.set('latlng', latlng)
+    
+    if Session.get('me')?
+      App.participantsController.updateLocation(latlng, @drawMarkers)
 
-    @updateParticipant()
+    @center(latlng)
 
-    #Participants.update(Session.get("me")._id, {latlng: latlng})
-    @create(latlng)
+  latlng: (latitude, longitude) ->
+    new google.maps.LatLng(latitude, longitude)
 
   error: (msg) =>
     console.log(arguments)
