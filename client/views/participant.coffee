@@ -5,4 +5,4 @@ Template.participant.events =
     App.participantsController.centerParticipant(name)
 
 Template.participant.marker = ->
-  App.map.updateMarkerForUser(this)
+  App.map.updateUserMarker(this)

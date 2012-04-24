@@ -1,6 +1,7 @@
 class Map
   
   markers: {}
+  locationObservers: []
 
   constructor: ->
     if @hasGeolocation()
@@ -22,17 +23,24 @@ class Map
     
     @map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-  center: (latlng) =>
+  center: (latitude, longitude) =>
+    latlng = @latlng(latitude, longitude)
     @map.setCenter(latlng)
 
   locate: =>
     navigator.geolocation.getCurrentPosition(@success, @error)
     
+  addLocationObserver: (method) ->
+    @locationObservers.push(method)
+
+  removeLocationObserver: (method) ->
+    locationObservers.splice(@locationObservers.indexOf(method), 1)
+
   drawMarkers: =>
     participants = Participants.find({mapId: Session.get('mapId')})
     console.log "Drawing markers", participants.count()
     participants.forEach( (item) =>
-      @updateMarkerForUser(item)
+      @updateUserMarker(item)
     )
 
   removeAllMarkers: ->
@@ -41,7 +49,7 @@ class Map
     )
     @markers = {}
 
-  createMarkerForUser: (user) =>
+  createUserMarker: (user) =>
     console.log "Creating marker for user", user
     marker = new google.maps.Marker({
       position: new google.maps.LatLng(user.latitude, user.longitude), 
@@ -50,20 +58,22 @@ class Map
     });
     @markers[user._id] = marker
 
-  updateMarkerForUser: (user) =>
+  updateUserMarker: (user) =>
     unless @markers[user._id]
-      @createMarkerForUser(user)
+      @createUserMarker(user)
     marker = @markers[user._id]
     marker.setPosition(new google.maps.LatLng(user.latitude, user.longitude))
     marker.setMap(@map) 
 
   success: (position) =>
     latlng = @latlng(position.coords.latitude, position.coords.longitude)
-    
+    $.each(@locationObservers, (index, method) ->
+      method(position.coords.latitude, position.coords.longitude)
+    )
     if Session.get('me')?
       App.participantsController.updateLocation(latlng, @drawMarkers)
 
-    @center(latlng)
+    @center(position.coords.latitude, position.coords.longitude)
 
   latlng: (latitude, longitude) ->
     new google.maps.LatLng(latitude, longitude)
