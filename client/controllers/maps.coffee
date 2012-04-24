@@ -5,5 +5,6 @@ class MapsController
     Maps.insert({name: mapName, createdAt: Date.now()})
     console.log "New map created", Maps.findOne({name: mapName})
     Session.set('mapId', mapName)
+    mapName
 
 window.MapsController = MapsController

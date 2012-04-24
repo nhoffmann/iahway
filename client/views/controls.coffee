@@ -13,4 +13,4 @@ Template.controls.events =
 
   'click #update': (event) ->
     event.preventDefault()
-    App.map.locate()
+    App.map.updatePosition()

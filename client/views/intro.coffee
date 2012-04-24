@@ -1,7 +1,7 @@
 Template.intro.greeting = ->
   if Session.get('mapId')?
     "Join the flock"
-  else
+  else 
     "Create a new map"
 
 Template.intro.events =
@@ -21,14 +21,17 @@ Template.intro.signin = ->
   if participant
     console.log "Found participant", participant
     Session.set('me', participant)
+    App.map.updatePosition()
+    Template.intro.showParticipants()
   else
+    console.log "Creating new participant"
     App.participantsController.create(name, Session.get('mapId'))
     
-  
-  App.map.locate()
-  Template.intro.showParticipants()
+    #Session.set('me', )
+    console.log "Created user", Session.get('me')
+    App.router.setMap(Session.get('mapId'))
 
 Template.intro.showParticipants = ->
-  $('.intro').hide()
+  $('#formWrapper').hide()
   $('.participants').show()
   $('.content').css('height', 'auto')

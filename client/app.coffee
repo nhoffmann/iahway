@@ -18,8 +18,8 @@ Meteor.startup( () ->
   App.map = new Map()
   App.mapsController = new MapsController()
   App.participantsController = new ParticipantsController()
-  
-  App.map.locate()
+
+  App.map.addLocationObserver(App.participantsController.updateLocation)
 
   # start the routing
   Backbone.history.start pushState: true

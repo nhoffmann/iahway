@@ -22,14 +22,34 @@ class Map
     }
     
     @map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    @updatePosition()
 
   center: (latitude, longitude) =>
     latlng = @latlng(latitude, longitude)
     @map.setCenter(latlng)
 
-  locate: =>
-    navigator.geolocation.getCurrentPosition(@success, @error)
+  updatePosition: =>
+    navigator.geolocation.getCurrentPosition((position) =>
+      $.each(@locationObservers, (index, method) ->
+        method(position.coords.latitude, position.coords.longitude)
+      )
+
+      @center(position.coords.latitude, position.coords.longitude)
+    , (error) -> 
+      console.log(arguments)
+    )
     
+  success: (position) =>
+    latlng = @latlng(position.coords.latitude, position.coords.longitude)
+    $.each(@locationObservers, (index, method) ->
+      method(position.coords.latitude, position.coords.longitude)
+    )
+
+    @center(position.coords.latitude, position.coords.longitude)
+
+  error: (msg) =>
+    console.log(arguments)
+
   addLocationObserver: (method) ->
     @locationObservers.push(method)
 
@@ -49,36 +69,23 @@ class Map
     )
     @markers = {}
 
-  createUserMarker: (user) =>
-    console.log "Creating marker for user", user
-    marker = new google.maps.Marker({
-      position: new google.maps.LatLng(user.latitude, user.longitude), 
-      map: @map, 
-      title: user.name
-    });
-    @markers[user._id] = marker
-
   updateUserMarker: (user) =>
     unless @markers[user._id]
       @createUserMarker(user)
     marker = @markers[user._id]
-    marker.setPosition(new google.maps.LatLng(user.latitude, user.longitude))
-    marker.setMap(@map) 
+    marker.setPosition(@latlng(user.latitude, user.longitude))
+    marker.setMap(@map)
 
-  success: (position) =>
-    latlng = @latlng(position.coords.latitude, position.coords.longitude)
-    $.each(@locationObservers, (index, method) ->
-      method(position.coords.latitude, position.coords.longitude)
+  createUserMarker: (user) =>
+    console.log "Creating marker for user", user
+    styledMarker = new StyledMarker(
+      styleIcon: new StyledIcon(StyledIconTypes.BUBBLE,{text: user.name, fore: '#ffffff', color: user.color})
+      position: @latlng(user.latitude, user.longitude)
+      map: @map
     )
-    if Session.get('me')?
-      App.participantsController.updateLocation(latlng, @drawMarkers)
-
-    @center(position.coords.latitude, position.coords.longitude)
+    @markers[user._id] = styledMarker
 
   latlng: (latitude, longitude) ->
     new google.maps.LatLng(latitude, longitude)
-
-  error: (msg) =>
-    console.log(arguments)
 
 window.Map = Map

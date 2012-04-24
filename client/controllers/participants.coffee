@@ -1,39 +1,52 @@
 class ParticipantsController
-  create: (name, mapId, callback) ->
+  create: (name, mapId) ->
     id = Participants.insert(
       name: name
       mapId: mapId
-      color: 'rgb('+utils.getRandomInt(50,150)+', '+utils.getRandomInt(50,150)+', '+utils.getRandomInt(50,150)+')'
+      color: utils.getRandomColor(50,150)
+      createdAt: Date.now()
     , (error, id) ->
       if error?
         console.log error 
     )
-    Session.set('me', Participants.findOne({name: name, mapId: mapId}))
-    console.log "Created user", Session.get('me')
-    App.router.setMap(Session.get('mapId'))
-    if callback?
-      callback()
+    console.log "Created user", id
+    user = Participants.findOne({_id: id})
+    Session.set('me', user)
+    
 
-  updateLocation: (latlng, callback) ->
+  # updateLocation: (latlng, callback) ->
 
-    Participants.update(Session.get('me')._id, 
-      $set: 
-        latitude: latlng.lat()
-        longitude: latlng.lng()
-    , (error, result) ->
-      if error?
-        console.log error
-      else
-        #Session.set('me', Participants.findOne(Session.get('me')._id))
-        console.log "Updated user", Session.get('me'), latlng, callback
-      if callback?
-        callback()
-    )
+  #   Participants.update(Session.get('me')._id, 
+  #     $set: 
+  #       latitude: latlng.lat()
+  #       longitude: latlng.lng()
+  #   , (error, result) ->
+  #     if error?
+  #       console.log error
+  #     else
+  #       #Session.set('me', Participants.findOne(Session.get('me')._id))
+  #       console.log "Updated user", Session.get('me'), latlng, callback
+  #     if callback?
+  #       callback()
+  #   )
+
+  updateLocation: (latitude, longitude) ->
+    if Session.get('me')?
+      Participants.update(Session.get('me')._id, 
+        $set: 
+          latitude: latitude
+          longitude: longitude
+      , (error, result) ->
+        if error?
+          console.log error
+        else
+          #Session.set('me', Participants.findOne(Session.get('me')._id))
+          console.log "Updated user", Session.get('me'), latitude, longitude
+      )
 
   centerParticipant: (name) ->
     participant = Participants.findOne({name: name, mapId: Session.get('mapId')})
-    latlng = App.map.latlng(participant.latitude, participant.longitude)
-    App.map.center(latlng)
+    App.map.center(participant.latitude, participant.longitude)
 
     # Removes a user from the map and routes her back to home
   destroy: ->
