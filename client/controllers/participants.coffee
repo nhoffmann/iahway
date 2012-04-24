@@ -9,26 +9,8 @@ class ParticipantsController
       if error?
         console.log error 
     )
-    console.log "Created user", id
     user = Participants.findOne({_id: id})
     Session.set('me', user)
-    
-
-  # updateLocation: (latlng, callback) ->
-
-  #   Participants.update(Session.get('me')._id, 
-  #     $set: 
-  #       latitude: latlng.lat()
-  #       longitude: latlng.lng()
-  #   , (error, result) ->
-  #     if error?
-  #       console.log error
-  #     else
-  #       #Session.set('me', Participants.findOne(Session.get('me')._id))
-  #       console.log "Updated user", Session.get('me'), latlng, callback
-  #     if callback?
-  #       callback()
-  #   )
 
   updateLocation: (latitude, longitude) ->
     if Session.get('me')?
@@ -38,10 +20,7 @@ class ParticipantsController
           longitude: longitude
       , (error, result) ->
         if error?
-          console.log error
-        else
-          #Session.set('me', Participants.findOne(Session.get('me')._id))
-          console.log "Updated user", Session.get('me'), latitude, longitude
+          console.log arguments
       )
 
   centerParticipant: (name) ->

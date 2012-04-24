@@ -5,7 +5,6 @@ MapsRouter = Backbone.Router.extend(
     "*home": "home"
  
   home: ->
-    console.log "Home"
     $('.participants').hide()
     $('#formWrapper').show()
     $('#name').focus()
@@ -14,7 +13,6 @@ MapsRouter = Backbone.Router.extend(
     Session.set "mapId", mapId
 
     if Session.get('mapId') && Session.get('me')
-      console.log "Existing user", Session.get('me')
       App.map.updatePosition()
       Template.intro.showParticipants()
       
@@ -24,7 +22,6 @@ MapsRouter = Backbone.Router.extend(
 
   setMap: (mapId) ->
     if mapId?
-      console.log "Setting map in router", mapId
       @navigate('map/' + mapId, true)
 )
 

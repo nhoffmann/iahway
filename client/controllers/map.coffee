@@ -76,12 +76,11 @@ class Map
     marker.setPosition(@latlng(user.latitude, user.longitude))
     marker.setMap(@map)
 
+  # Creates a new marker with the name and color of the given user.
+  # The marker is not positioned yet on a map.
   createUserMarker: (user) =>
-    console.log "Creating marker for user", user
     styledMarker = new StyledMarker(
       styleIcon: new StyledIcon(StyledIconTypes.BUBBLE,{text: user.name, fore: '#ffffff', color: user.color})
-      position: @latlng(user.latitude, user.longitude)
-      map: @map
     )
     @markers[user._id] = styledMarker
 
