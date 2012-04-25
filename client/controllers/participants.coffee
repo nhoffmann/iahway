@@ -25,7 +25,7 @@ class ParticipantsController
 
   centerParticipant: (name) ->
     participant = Participants.findOne({name: name, mapId: Session.get('mapId')})
-    App.map.center(participant.latitude, participant.longitude)
+    App.map.panTo(participant.latitude, participant.longitude)
 
     # Removes a user from the map and routes her back to home
   destroy: ->

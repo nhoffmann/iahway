@@ -28,6 +28,10 @@ class Map
     latlng = @latlng(latitude, longitude)
     @map.setCenter(latlng)
 
+  panTo: (latitude, longitude) =>
+    latlng = @latlng(latitude, longitude)
+    @map.panTo(latlng)    
+
   updatePosition: =>
     navigator.geolocation.getCurrentPosition((position) =>
       $.each(@locationObservers, (index, method) ->
