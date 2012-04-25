@@ -5,8 +5,7 @@ MapsRouter = Backbone.Router.extend(
     "*home": "home"
  
   home: ->
-    $('.participants').hide()
-    $('#formWrapper').show()
+    Template.intro.hideParticipants()
     $('#name').focus()
 
   map: (mapId) ->

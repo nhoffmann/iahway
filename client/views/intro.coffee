@@ -25,6 +25,11 @@ Template.intro.signin = ->
     App.router.setMap(Session.get('mapId'))
 
 Template.intro.showParticipants = ->
-  $('#formWrapper').hide()
+  $('.intro').hide()
   $('.participants').show()
   $('.content').css('height', 'auto')
+
+Template.intro.hideParticipants = ->
+  $('.intro').show()
+  $('.participants').hide()
+  $('.content').css('height', '100%')

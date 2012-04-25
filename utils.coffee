@@ -4,8 +4,12 @@ class Utils
 @utils = new Utils()
 
 Utils::getRandomColor = (start, end) ->
- color = 'rgb('+@getRandomInt(start,end)+', '+@getRandomInt(start,end)+', '+@getRandomInt(start,end)+')'
- @colorToHex(color)
+  colors = [@getRandomInt(start,end), @getRandomInt(start,end), @getRandomInt(start,end)]
+  colors[@getRandomInt(0,2)] = @getRandomInt(200,255)
+  colors[@getRandomInt(1,2)] = 0
+  color = 'rgb('+colors[0]+', '+colors[1]+', '+colors[2]+')'
+  # color = 'rgb('+@getRandomInt(start,end)+', '+@getRandomInt(start,end)+', '+@getRandomInt(start,end)+')'
+  @colorToHex(color)
 
 Utils::getRandomInt = (min, max, exceptArray) ->
   randomInt = Math.floor(Math.random() * (max - min + 1)) + min
