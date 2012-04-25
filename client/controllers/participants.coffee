@@ -27,7 +27,7 @@ class ParticipantsController
     participant = Participants.findOne({name: name, mapId: Session.get('mapId')})
     App.map.panTo(participant.latitude, participant.longitude)
 
-    # Removes a user from the map and routes her back to home
+  # Removes a user from the map and routes her back to home
   destroy: ->
     Participants.remove(Session.get('me')._id, (error) =>
       if error

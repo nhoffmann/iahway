@@ -10,6 +10,7 @@ MapsRouter = Backbone.Router.extend(
 
   map: (mapId) ->
     Session.set "mapId", mapId
+    App.map.observe(mapId)
 
     if Session.get('mapId') && Session.get('me')
       App.map.updatePosition()

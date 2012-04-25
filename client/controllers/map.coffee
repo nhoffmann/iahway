@@ -6,6 +6,8 @@ class Map
   constructor: ->
     if @hasGeolocation()
       @init()
+      @updatePosition()
+      # @drawMarkers()
     
   hasGeolocation: ->
     if navigator.geolocation
@@ -22,7 +24,6 @@ class Map
     }
     
     @map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    @updatePosition()
 
   center: (latitude, longitude) =>
     latlng = @latlng(latitude, longitude)
@@ -54,6 +55,21 @@ class Map
   error: (msg) =>
     console.log(arguments)
 
+
+  observe: (mapId) ->
+    if @observerHandle?
+      # kill observer if it already existed
+      @observerHandle.stop()
+
+    query = Participants.find({mapId: mapId})
+    @observerHandle = query.observe
+      added: (participant) =>
+        @updateOrCreateUserMarker(participant)
+      changed: (participant) =>
+        @updateOrCreateUserMarker(participant)
+      removed: (participant) =>
+        @removeMarker(participant._id)
+
   addLocationObserver: (method) ->
     @locationObservers.push(method)
 
@@ -64,29 +80,40 @@ class Map
     participants = Participants.find({mapId: Session.get('mapId')})
     console.log "Drawing markers", participants.count()
     participants.forEach( (item) =>
-      @updateUserMarker(item)
+      @updateOrCreateUserMarker(item)
     )
 
   removeAllMarkers: ->
-    $.each(@markers, (userId, marker) ->
-      marker.setMap(null)
+    $.each(@markers, (userId) =>
+      @removeMarker(userId)
     )
-    @markers = {}
+    # @markers = {}
 
-  updateUserMarker: (user) =>
-    unless @markers[user._id]
-      @createUserMarker(user)
-    marker = @markers[user._id]
-    marker.setPosition(@latlng(user.latitude, user.longitude))
-    marker.setMap(@map)
+  removeMarker: (userId) ->
+    @markers[userId].setMap(null)
+    delete @markers[userId]
 
-  # Creates a new marker with the name and color of the given user.
-  # The marker is not positioned yet on a map.
+  updateOrCreateUserMarker: (user) =>
+    if user.name?
+      if @markers[user._id]
+        @positionMarker(@markers[user._id], user.latitude, user.longitude)
+      else
+        @createUserMarker(user)    
+
   createUserMarker: (user) =>
     styledMarker = new StyledMarker(
-      styleIcon: new StyledIcon(StyledIconTypes.BUBBLE,{text: user.name, fore: '#ffffff', color: user.color})
+      styleIcon: new StyledIcon(StyledIconTypes.BUBBLE,
+        text: user.name
+        fore: '#ffffff'
+        color: user.color
+      )
     )
+    @positionMarker(styledMarker, user.latitude, user.longitude)
     @markers[user._id] = styledMarker
+
+  positionMarker: (marker, latitude, longitude) ->
+    marker.setPosition(@latlng(latitude, longitude))
+    marker.setMap(@map)
 
   latlng: (latitude, longitude) ->
     new google.maps.LatLng(latitude, longitude)
