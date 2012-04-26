@@ -26,10 +26,10 @@ Template.intro.signin = ->
 
 Template.intro.showParticipants = ->
   $('.intro').hide()
-  $('.participants').show()
+  $('.navigation').show()
   $('.content').css('height', 'auto')
 
 Template.intro.hideParticipants = ->
   $('.intro').show()
-  $('.participants').hide()
+  $('.navigation').hide()
   $('.content').css('height', '100%')

@@ -38,6 +38,8 @@ header {
     padding: 0;
     line-height: 30px;
     display: inline;
+
+    color: white;
   }
 
   .server-status {
@@ -45,7 +47,6 @@ header {
     width: @size;
     height: @size;
     margin: 10px 0 0;
-    color: white;
     float: right;
     .rounded-corners(@size);
     text-align: center;
@@ -84,52 +85,56 @@ header {
     width: 100%;
     height: 100%;
     min-height: 416px;
+
     .form {
       position: relative;
       top: 100px;
       width: 320px;
       margin: 0 auto;
-    }
 
-    // .content-bg;
+      input {
+        font-size: 30px;
+        border: 1px solid #000;
+        .rounded-corners;
+      }
 
-    input[type="text"]{
-      margin: 10px auto;
-      width: 280px;
-      font-size: 30px;
-      padding: 10px;
-      border: 1px solid #eee;
-      .rounded-corners;
-    }
+      input[type="text"]{
+        margin: 10px auto;
+        width: 280px;
+        padding: 10px;        
+      }
 
-    input[type="submit"]{
-      font-size: 30px;
-      font-weight: bold;
-      margin: 0 auto;
-      width: 300px;
-      padding: 10px 0;
-      background: #000;
-      color: #fff;
-      border: 1px solid #000;
-      .rounded-corners;
+      input[type="submit"]{
+        font-weight: bold;
+        margin: 0 auto;
+        width: 300px;
+        padding: 10px 0;
+        background: #000;
+        color: #fff;
+      }
     }
   }
 
-  .participants{
+  .navigation{
+
     text-align:left;
-    height: 20px;
+    min-height: 20px;
     margin: 0;
-    padding: 5px;
+    padding: 0 5px;
     color: white;
-    
-    .participant{
-      line-height: 20px;
-      font-size: 15px;
-      padding: 1px 3px;
-      margin: 2px;
-      .rounded-corners(3px);
-      cursor: pointer;
-      border: 1px solid #000000;
+
+    line-height: 30px;
+    font-size: 15px;
+
+    .participants{
+      
+      .participant{
+        padding: 1px 3px;
+        margin-right: 6px;
+        .rounded-corners(3px);
+        cursor: pointer;
+        border: 1px solid #000000;
+      }
     }
   }
 }
@@ -154,4 +159,5 @@ header {
 
 .controls {
   float: right;
+  // margin-right: 10px;
 }

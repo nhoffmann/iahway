@@ -43,6 +43,12 @@ class Map
     , (error) -> 
       console.log(arguments)
     )
+
+  autoupdate: (update) ->
+    if update
+      @updateInterval = Meteor.setInterval @updatePosition, 10000
+    else
+      Meteor.clearInterval @updateInterval
     
   success: (position) =>
     latlng = @latlng(position.coords.latitude, position.coords.longitude)

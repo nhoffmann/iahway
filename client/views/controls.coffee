@@ -1,3 +1,6 @@
+Template.controls.autoupdate = ->
+  Session.get('autoupdate') and "On" or "Off"
+
 Template.controls.events =
   'click #send': (event) ->
     event.preventDefault()
@@ -14,3 +17,11 @@ Template.controls.events =
   'click #update': (event) ->
     event.preventDefault()
     App.map.updatePosition()
+
+  'click #toggle-update': (event) ->
+    event.preventDefault()
+    if Session.get('autoupdate')
+      Session.set('autoupdate', false)
+    else
+      Session.set('autoupdate', true)
+    App.map.autoupdate Session.get('autoupdate')
