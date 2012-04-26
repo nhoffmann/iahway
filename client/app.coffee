@@ -1,6 +1,5 @@
 # Create a namespace for the application
 window.App = new Object()
-# Create the global map object
 
 App.router = new MapsRouter()
 

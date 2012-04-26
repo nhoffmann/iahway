@@ -1,8 +1,8 @@
 Template.intro.greeting = ->
   if Session.get('mapId')?
-    "Join the flock"
+    "Join in!"
   else 
-    "Create a new map"
+    "Create a new map!"
 
 Template.intro.events =
   'submit #go' : (event) ->
